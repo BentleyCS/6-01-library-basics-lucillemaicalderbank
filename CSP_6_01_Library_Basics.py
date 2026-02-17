@@ -1,45 +1,44 @@
-# main.py
-import analytics  # Make sure this file exists in your repo
+import analytics
 
-# 1. Add 15% to each price
+
 def process_expenses(rawPrices):
-    # Use analytics function to add percentage
-    # Example: analytics.add_percentage(prices, pct)
-    return analytics.add_percentage(rawPrices, 15)
+    return [analytics.apply_markup(price, 0.15) for price in rawPrices]
 
 
-# 2. Ask for n scores, return highest and average
 def analyze_scores(n):
     scores = []
     for i in range(n):
         score = float(input(f"Enter score {i+1}: "))
         scores.append(score)
-
-    highest = analytics.find_max(scores)       # use analytics max function
-    average = analytics.calculate_average(scores)  # use analytics average function
+    highest = analytics.get_highest(scores)
+    average = analytics.get_average(scores)
     return highest, average
 
 
-# 3. Sanitize list of usernames
 def sanitize_usernames(usernames):
-    # Use analytics sanitize function
-    # Example: analytics.clean_strings(list_of_strings)
-    return analytics.clean_strings(usernames)
+    return analytics.clean_text(usernames)
 
 
-# 4. Return values over 100
-def identify_outliers(values):
-    # Use analytics filter function
-    # Example: analytics.filter_greater_than(values, 100)
-    return analytics.filter_greater_than(values, 100)
+def identify_outliers(numbers):
+    return analytics.filter_threshold(numbers, 100)
 
 
-# 5. Search and report
 def search_and_report(items):
-    cleaned = analytics.clean_strings(items)  # sanitize first
-    search_item = input("Enter item to search for: ").strip().lower()
-
-    if analytics.is_sorted(cleaned):           # check if list is sorted
-        return analytics.binary_search(cleaned, search_item)
+    items_clean = analytics.clean_text(items)
+    search_word = input("Enter word to search: ").strip().lower()
+    if items_clean == sorted(items_clean):
+        low, high = 0, len(items_clean) - 1
+        while low <= high:
+            mid = (low + high) // 2
+            if items_clean[mid] == search_word:
+                return mid
+            elif items_clean[mid] < search_word:
+                low = mid + 1
+            else:
+                high = mid - 1
+        return -1
     else:
-        return analytics.linear_search(cleaned, search_item)
+        for i, item in enumerate(items_clean):
+            if item == search_word:
+                return i
+        return -1
