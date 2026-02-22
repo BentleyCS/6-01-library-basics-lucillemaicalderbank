@@ -1,60 +1,64 @@
-# main_functions.py
 import analytics
 
-# 1. Add 15% markup to each price in the list
+
+# 1. Returns list with 15% added value
 def process_expenses(rawPrices):
-    return [analytics.apply_markup(price, 0.15) for price in rawPrices]
+    # Uses apply_markup from analytics
+    return [analytics.apply_markup(p, 0.15) for p in rawPrices]
 
 
-# 2. Ask user for n scores, return highest and average
+# 2. Asks for n scores, returns (highest, average)
 def analyze_scores(n):
     scores = []
     for i in range(n):
-        while True:
-            try:
-                score = float(input(f"Enter score {i+1}: "))
-                scores.append(score)
-                break
-            except ValueError:
-                print("Please enter a valid number.")
-    highest = analytics.get_highest(scores)
-    average = analytics.get_average(scores)
-    return highest, average
+        val = float(input(f"Enter score {i + 1}: "))
+        scores.append(val)
+
+    # Uses get_highest and get_average from analytics
+    high = analytics.get_highest(scores)
+    avg = analytics.get_average(scores)
+    return high, avg
 
 
-# 3. Sanitize a list of usernames: lowercase and no spaces
-def sanitize_usernames(usernames):
-    return analytics.clean_text(usernames)
+# 3. Removes spaces and lowercases strings
+def sanitize_usernames(user_list):
+    # Uses clean_text from analytics
+    # Note: clean_text handles .strip() and .lower() as requested
+    return analytics.clean_text(user_list)
 
 
-# 4. Return list of numbers over 100
-def identify_outliers(numbers):
-    return analytics.filter_threshold(numbers, 100)
+# 4. Returns a version of the list with all values over 100
+def identify_outliers(data):
+    # Uses filter_threshold from analytics with a limit of 100
+    return analytics.filter_threshold(data, 100)
 
 
-# 5. Search for an item in a list
+# 5. Sanitizes, determines search type, and returns location
 def search_and_report(items):
-    items = analytics.clean_text(items)
-    search_item = input("Enter the item to search for: ").strip().lower()
+    # First, sanitize using analytics
+    clean_items = analytics.clean_text(items)
 
-    # Check if list is sorted
-    is_sorted = all(items[i] <= items[i+1] for i in range(len(items)-1))
+    target = input("Enter item to search for: ").strip().lower()
 
-    # Binary search if sorted
+    # Check if list is in order to decide search method
+    # Since analytics.py doesn't have a sorter, we check order manually
+    is_sorted = clean_items == sorted(clean_items)
+
     if is_sorted:
-        left, right = 0, len(items)-1
-        while left <= right:
-            mid = (left + right) // 2
-            if items[mid] == search_item:
+        # Binary Search implementation
+        low, high = 0, len(clean_items) - 1
+        while low <= high:
+            mid = (low + high) // 2
+            if clean_items[mid] == target:
                 return mid
-            elif items[mid] < search_item:
-                left = mid + 1
+            elif clean_items[mid] < target:
+                low = mid + 1
             else:
-                right = mid - 1
-        return -1  # Not found
+                high = mid - 1
+    else:
+        # Linear Search implementation
+        for i in range(len(clean_items)):
+            if clean_items[i] == target:
+                return i
 
-    # Linear search if not sorted
-    for idx, item in enumerate(items):
-        if item == search_item:
-            return idx
-    return -1  # Not found
+    return -1  # Return -1 if not found

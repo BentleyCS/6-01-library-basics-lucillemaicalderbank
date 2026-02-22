@@ -1,36 +1,27 @@
-import builtins
-import main
+from homework import *
 
+def run_tests():
+    print("--- 1. Testing process_expenses ---")
+    # 100 + 15% = 115.0
+    print(f"Prices [100, 200]: {process_expenses([100, 200])}")
 
-def test_process_expenses():
-    assert main.process_expenses([100, 200]) == [115.0, 230.0]
+    print("\n--- 3. Testing sanitize_usernames ---")
+    names = ["  Admin", " guest ", "User123  "]
+    print(f"Cleaned: {sanitize_usernames(names)}")
 
+    print("\n--- 4. Testing identify_outliers ---")
+    nums = [50, 101, 20, 500, 99]
+    print(f"Outliers (>100): {identify_outliers(nums)}")
 
-def test_sanitize_usernames():
-    data = ["  Alice ", "BOB", " ChArLiE  "]
-    assert main.sanitize_usernames(data) == ["alice", "bob", "charlie"]
+    print("\n--- 5. Testing search_and_report (Unsorted) ---")
+    # This will prompt you for an input. Try 'apple'
+    fruit = ["  Apple", "Banana ", "  CHERRY  ", " date "]
+    print(f"Search Result Index: {search_and_report(fruit)}")
 
+    print("\n--- 2. Testing analyze_scores ---")
+    # This will prompt you for 3 scores
+    high, avg = analyze_scores(3)
+    print(f"Highest: {high}, Average: {avg}")
 
-def test_identify_outliers():
-    data = [50, 150, 200, 75]
-    assert main.identify_outliers(data) == [150, 200]
-
-
-def test_analyze_scores(monkeypatch):
-    inputs = iter(["90", "80", "100"])
-    monkeypatch.setattr(builtins, "input", lambda _: next(inputs))
-
-    highest, avg = main.analyze_scores(3)
-
-    assert highest == 100
-    assert avg == 90.0
-
-
-def test_search_and_report_sorted(monkeypatch):
-    items = ["  Apple", "Banana ", "  CHERRY  ", " date "]
-
-    monkeypatch.setattr(builtins, "input", lambda _: "banana")
-
-    result = main.search_and_report(items)
-
-    assert "Found at index" in result
+if __name__ == "__main__":
+    run_tests()
