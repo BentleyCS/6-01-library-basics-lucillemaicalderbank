@@ -1,17 +1,13 @@
-# If analytics functions are in a separate file, keep 'import analytics'
-# Otherwise, ensure these functions exist in this file:
 
 def clean_text(words_list):
     return [word.strip().lower() for word in words_list]
 
 
 def search_and_report(items):
-    # Use the cleaning function
     clean_items = clean_text(items)
 
     target = input("Enter item to search for: ").strip().lower()
 
-    # Check for order
     is_ordered = True
     for i in range(len(clean_items) - 1):
         if clean_items[i] > clean_items[i + 1]:
